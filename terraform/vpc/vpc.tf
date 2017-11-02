@@ -1,6 +1,6 @@
 terraform {
     backend "s3" {
-        bucket = "tfstates"
+        bucket = "jcf-tf-state"
         key    = "demo/vpc"
         region = "eu-west-1"
     }

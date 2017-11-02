@@ -1,40 +1,35 @@
 env:
   global:
-  - PACKER_VERSION=1.0.0
-  - TERRAFORM_VERSION=0.9.8
+  - PACKER_VERSION=1.1.1
+  - TERRAFORM_VERSION=0.10.7
   - TOOLS_DIR=$HOME/tools
   - PACKER_TEMPLATE=packer_apache_php.json
   - PACKER_VARS=vars/travis.json
-  - STATE_BUCKET=tfstates
+  - STATE_BUCKET=jcf-tf-state
   - STATE_KEY=demo/frontends
   - AWS_DEFAULT_REGION=eu-west-1
-  - secure: a6Cll+xqEJ8occt5j76FhNgpgHzP6rp3GC4SQTq2UQd0aIEl/Xd7N0ChmGHwiUr3ehKchVdecI9Fy0KcEe9f8p96KlxiOkgLafS4CdAgY2+lNvu6VZdNLzWstGfBTXOZDJ2MedwTz2omVrKvEZNE5r4bz7ZelKtece8Jbg3gVNA=
-  - secure: F64+IuxUPz+dQCn4j/i84RxIuGCOS4C0XTQdxmzEHsEhB/3MyZ2jpI1ZDJBCJHQPcMEiOK5sSSxGD4M3Mab/HdVUELJV32qOsDw7ZYtr3zUevLOAtzh78M5M0vxatmlfZy6xy4v/p0iehaS3Zo82cQY1Ndepx+tutFnLGbHG+QA=
-
-dist: trusty
+  - secure: RdX1h81HgMreqh/Md/soBbkUET1faIuCADhoGFS2N3/2Q6cplYny6rTy9qVoWF9XH/0YSYuqZuPuPpqP1SsH/h0LIHDHOJoMs4sdRwiUEzenda4QvOcaJxIrFVGrV4wKvxJp0B05cX8mwHJF9/pFEfVOhDQ12KhqtEw+UioD+0LXj3kzDIDs4ZGg704n9ouhVjEZ/OXFO3v1t2tSit327ZBv0PEqB8NBGNIlskG4FUihl04rpAE9VnUX2s+/73n7mlNtVYzXqQ9KPU4/074EjiUIaTphPLmx3ETlDaGcB38GT3Q7zigCC3y+vEWlOoajRxaWkRZEqUx8Scmew+EButsxjVCQcdElfoZWUoZXb97Scr5ewoFZ/VzMnRvig5HW1QWkZ3weaHh41ftwmV2jG2jr+mQ1frycOyRnJD3q3+MJ51rVrtDpvgFnQELQPBNoXMHdham98u9gk3icXDFAyIbQ3UkvtDVx1E8urOLLVaOjPI48gofpsoR0I5Go3kWdRA0UAXn8YLYYKBAD+s/TKJlDp4lKVKaE0FHY0iqvzjgAD1aqyjk4yB6do88hXZfSa7s3bjA1LFG102e5e1ThGnIoybLiwWyc6WsrRpYoX/h3dXOvUZLEJU3ijeAKU9g/mlOe06LpMuG3LeVsRkXeZMSKFeIKFiug8XR0g320d88=
+  - secure: mqPZfsa0AzlFLXGdEsfbkcoRVk6UyGqOvqNkIHN0n63BBjvxZKh3KDndQWYsh56yIipoREQVG0WTqsTYQyOOmp6zKsLtCg9YP+wQy1Nq1tV/5YMorfOW9ljmT4T5gLryZOjSZ3PATTK2MpvsfLIrAfrEstP1KtucbMK471SPb6ZXau/o3TnsqiWDbW60YBhDDKtLq5W2Kg+cHSt1cVOrAkA7v2ERFwTFyKhBEJe+HnTj2VT4P+Asx81PTIr3BFK4gMlrOnAe07XLVodI5X7J/5QjN6HrJAjFezZF2RbMa8vtO6FQCgobuM39vdfdauHKtvcTWefYr96MwTNzrSnqb9ORUVwTE7e6j9ijFEooHBp0q6z8IcwzENG1Gipw043/DG33lafW17jNlw9MIvXBn3wKTHRKI4EAbbGPjR0swnLQacsLdL8DCLXBKJzlrX3Lq2ONBcLC0/FkDtHxkJkceQOqtiKTOl8TM1kqJgl0viwRsh3K4Q7LR82ADw+6b4XurpXjml/UQrdK4xX+udIXciYvmxOortX3JlHK9x7Aw8VqpRdoPp5HfTjjbYrjoNut2dKpA5Sbz5GlY3dOKR3EKDrZLz/VKQTazQuRcA8riqdc3zJdmNapmkfcXakTVpf0iDOhmUBBpg/iF2mcJYgivga+WFF+JxGRg+r+vynerl4=
 
 language: php
-
 php:
-  - '5.6'
-
+- '5.6'
 before_install:
-  - composer self-update
-
+- composer self-update
 script:
-  - php -l site/index.php
-  - export COMMIT_SUBJECT="$(git log --format=%s --no-merges -n 1)"
-
+- php -l site/index.php
+- export COMMIT_SUBJECT="$(git log --format=%s --no-merges -n 1)"
 before_deploy:
-  - export PATH=$PATH:$TOOLS_DIR/bin
-  - scripts/install_packer.sh
-  - scripts/install_terraform.sh
-#  - pip install --user awscli
-
+- export PATH=$PATH:$TOOLS_DIR/bin
+- scripts/install_packer.sh
+- scripts/install_terraform.sh
 deploy:
   provider: script
   script:
-    - scripts/pack_and_deploy.sh $TRAVIS_BUILD_DIR $PACKER_VARS $PACKER_TEMPLATE $TRAVIS_COMMIT $STATE_BUCKET $STATE_KEY
+  - scripts/pack_and_deploy.sh $TRAVIS_BUILD_DIR $PACKER_VARS $PACKER_TEMPLATE $TRAVIS_COMMIT
+    $STATE_BUCKET $STATE_KEY
   on:
     branch: master
-    condition: "$COMMIT_SUBJECT != *\"[no deploy]\"*"
+    condition: $COMMIT_SUBJECT != *"[no deploy]"*
+dd:
+  secure: uP1tN7dId1Wpgl6fiaL9xaqkdbRbM185OX4ws3oGeetDRK35kKiQ3kF1u1T6sfKM53rVRr6OKNHIoqKlIICbqFll19B5/pT6jbiDBpWI+BB5EgdN0AzHsKuhan8adKpEJZJUeQsxnoqKjRQh5c+7vtZPNWHO6L2LjzDf/mmIczPlue+UkAWdnPnc8x7SCuq0CEwqqdbULbzUF+Qnp7t0N8wRj0UJLEljjcJzfUxI/zxLIcbOiz/yyHEtRKL4TJhUp3Ay0Bsg5NAUXtroO1YIj+C7QTYalLCvJS/3y/vP/SJLpxAa5QsgCE7KLp+K+JggyUga92r6rNMYvinSe4fEEiwwQdw/aw+uDTw5YYyvKU5DxuAOMsQEumTsL/tc88cnzkhScWe1zyJ0hPCo6t3Ldq1LnW/DBazGozZ4BcnrPP8q8QgYGqDdmL5vlTIwjOCTxPz4ECQzn131ew1ELvt9yD6g8huNk6Xnp1lv7NsabQm8M22WnJVtJYXLIO9qoNUA3G4NHj9cm6RQBCV8SdYAjs3rgz7EZH3mNL4eTNQeePnRXXKMzTEHg26LPaQomhc1/qzoVsvw9IP8PQGpYk4gBlFE6iCM54dJPjV0fe89wnslorTsJIim8m5h7o1jfcyQnVw80UTL/QgTkmlpaaraIkLp0c4YToTjKncMtA6KmsI=

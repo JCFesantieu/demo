@@ -1,6 +1,6 @@
 terraform {
     backend "s3" {
-        bucket = "tfstates"
+        bucket = "jcf-tf-state"
         key    = "demo/backends"
         region = "eu-west-1"
     }
@@ -9,7 +9,7 @@ terraform {
 data "terraform_remote_state" "vpc" {
     backend = "s3"
     config {
-        bucket = "tfstates"
+        bucket = "jcf-tf-state"
         key    = "demo/vpc"
         region = "eu-west-1"
     }

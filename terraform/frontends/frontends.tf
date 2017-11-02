@@ -1,6 +1,6 @@
 terraform {
     backend "s3" {
-        bucket = "tfstates"
+        bucket = "jcf-tf-state"
         key    = "demo/frontends"
         region = "eu-west-1"
     }
@@ -9,7 +9,7 @@ terraform {
 data "terraform_remote_state" "vpc" {
     backend = "s3"
     config {
-        bucket = "tfstates"
+        bucket = "jcf-tf-state"
         key    = "demo/vpc"
         region = "eu-west-1"
     }
@@ -18,7 +18,7 @@ data "terraform_remote_state" "vpc" {
 data "terraform_remote_state" "backends" {
     backend = "s3"
     config {
-        bucket = "tfstates"
+        bucket = "jcf-tf-state"
         key    = "demo/backends"
         region = "eu-west-1"
     }
@@ -87,16 +87,5 @@ resource "aws_autoscaling_group" "web_asg" {
     lifecycle { create_before_destroy = true }
 }
 
-resource "aws_route53_record" "web" {
-    count = "${var.route53_zoneid == "" ? 0: 1}"
-    zone_id = "${var.route53_zoneid}"
-    name = "${var.dns_alias}"
-    type = "A"
-    alias {
-        name = "${aws_elb.web.dns_name}"
-        zone_id = "${aws_elb.web.zone_id}"
-        evaluate_target_health = "false"
-    }
-}
 
 output "elb" { value = "${aws_elb.web.dns_name}" }
