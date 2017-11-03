@@ -1,8 +1,8 @@
 {
     "source_ami": "ami-e31a6594",
     "region": "eu-west-1",
-    "build_vpc": "vpc-1c612a78",
-    "build_subnet": "subnet-ac284bf4",
+    "build_vpc": "vpc-45684b22",
+    "build_subnet": "subnet-8c8eddeb",
     "build_sg": "",
     "ssh_private"   : "false",
     "public_ip"     : "true",
